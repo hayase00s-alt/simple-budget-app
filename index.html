@@ -5,259 +5,410 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>シンプル家計簿</title>
   <style>
-    :root{--bg:#f8fafc;--card:#ffffff;--text:#0f172a;--sub:#64748b;--border:#e2e8f0;--dark:#0f172a;--danger:#dc2626;--soft:#fef2f2;--primary:#111827}
+    :root{
+      --bg:#f8fafc;--card:#ffffff;--text:#0f172a;--sub:#64748b;--border:#e2e8f0;
+      --dark:#0f172a;--danger:#dc2626;--soft:#fef2f2;--soft2:#f8fafc;
+    }
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:760px;margin:0 auto;padding:16px}
+    .wrap{max-width:860px;margin:0 auto;padding:16px}
     .title{display:flex;align-items:center;gap:12px;margin-bottom:16px}
     .icon{width:44px;height:44px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-    h1{font-size:28px;margin:0}
-    .sub{color:var(--sub);font-size:14px;margin-top:4px}
+    h1{font-size:28px;margin:0}.sub{color:var(--sub);font-size:14px;margin-top:4px}
     .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-    .tab{border:none;background:#fff;padding:12px;border-radius:16px;font-size:15px}
+    .tab{border:none;background:#fff;padding:12px;border-radius:16px;font-size:15px;cursor:pointer}
     .tab.active{background:var(--dark);color:#fff}
-    .page{display:none}
-    .page.active{display:block}
+    .page{display:none}.page.active{display:block}
     .card{background:var(--card);border-radius:24px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:16px}
     .card h2{margin:0 0 14px 0;font-size:24px}
     .row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin-bottom:10px;background:#fff;gap:12px}
-    .row .amt{font-weight:700;font-size:20px;text-align:right}
-    .small{font-size:12px;color:var(--sub)}
-    .total{background:var(--dark);color:#fff;border:none}
-    .total .small{color:#cbd5e1}
-    .negative{border-color:#fecaca;background:var(--soft)}
-    .negative .amt,.negative .small{color:var(--danger)}
-    .btn{width:100%;padding:14px;border-radius:18px;border:1px solid var(--border);background:#fff;font-size:16px}
+    .row .amt{font-weight:700;font-size:20px;text-align:right}.small{font-size:12px;color:var(--sub);line-height:1.5}
+    .total{background:var(--dark);color:#fff;border:none}.total .small{color:#cbd5e1}
+    .negative{border-color:#fecaca;background:var(--soft)}.negative .amt,.negative .small{color:var(--danger)}
+    .btn{width:100%;padding:14px;border-radius:18px;border:1px solid var(--border);background:#fff;font-size:16px;cursor:pointer}
     .btn.primary{background:var(--dark);color:#fff;border:none}
-    .btn.danger{background:#fff;color:#b91c1c;border:1px solid #fecaca}
-    .btn.inline{width:auto;padding:10px 14px;font-size:14px}
-    .btn.secondary{background:#fff;color:var(--text)}
-    .field{margin-bottom:14px}
-    .field label{display:block;font-size:14px;margin-bottom:8px}
+    .btn.danger{border-color:#fecaca;color:var(--danger);background:#fff}
+    .btn.inline{width:auto;padding:10px 14px;font-size:14px;border-radius:14px}
+    .field{margin-bottom:14px}.field label{display:block;font-size:14px;margin-bottom:8px}
     .field input,.field select{width:100%;padding:14px;border-radius:16px;border:1px solid var(--border);font-size:16px;background:#fff}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
     .expense{border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:10px;background:#fff}
-    .expense-top{display:flex;justify-content:space-between;gap:12px}
-    .expense-name{font-weight:700}
-    .action-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px}
-    .link-btn{border:none;background:transparent;font-size:14px;padding:6px 0;cursor:pointer}
-    .edit{color:#1d4ed8}
-    .delete{color:#b91c1c}
+    .expense-top{display:flex;justify-content:space-between;gap:12px}.expense-name{font-weight:700}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:8px}
     .hint{font-size:14px;color:var(--sub);line-height:1.6}
-    .badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:600;margin-top:6px}
-    .editing-box{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-    .empty{padding:20px 0;text-align:center}
-    @media (max-width:520px){h1{font-size:24px}.card h2{font-size:22px}.row .amt{font-size:18px}.tabs{grid-template-columns:repeat(2,1fr)}}
+    .summary-box{border:1px solid var(--border);border-radius:18px;padding:12px;background:var(--soft2)}
+    .summary-box .label{font-size:13px;color:var(--sub);margin-bottom:4px}
+    .summary-box .value{font-weight:800;font-size:18px}
+    @media (max-width:700px){.grid3{grid-template-columns:1fr 1fr}}
+    @media (max-width:520px){h1{font-size:24px}.card h2{font-size:22px}.row .amt{font-size:18px}.tabs{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="title"><div class="icon">💴</div><div><h1>家計簿アプリ</h1><div class="sub">カテゴリ予算の残りがすぐわかるシンプル版</div></div></div>
+  <div class="title">
+    <div class="icon">💴</div>
+    <div>
+      <h1>家計簿アプリ</h1>
+      <div class="sub">カテゴリ予算の残りがすぐわかるシンプル版</div>
+    </div>
+  </div>
+
   <div class="tabs">
     <button class="tab active" data-tab="home">トップ</button>
     <button class="tab" data-tab="input">入力</button>
     <button class="tab" data-tab="list">一覧</button>
     <button class="tab" data-tab="budget">予算設定</button>
   </div>
+
   <section id="home" class="page active"></section>
-  <section id="input" class="page">
-    <div class="card">
-      <h2>支出を入力</h2>
-      <form id="expenseForm">
-        <div class="field"><label>金額</label><input id="amount" inputmode="numeric" placeholder="例: 1200" /></div>
-        <div class="field"><label>カテゴリ</label><select id="category"></select></div>
-        <div class="field"><label>支払い方法</label><select id="paymentMethod"><option value="クレジット">クレジット</option><option value="現金">現金</option></select></div>
-        <div class="field"><label>名称</label><input id="name" placeholder="例: カフェ、飲み会、映画" /></div>
-        <div class="field"><label>日付</label><input id="date" type="date" /></div>
-        <button class="btn primary" type="submit">登録する</button>
-      </form>
-    </div>
-  </section>
+  <section id="input" class="page"></section>
   <section id="list" class="page"></section>
   <section id="budget" class="page"></section>
 </div>
-<script>
-const DEFAULT_BUDGETS={"嗜好品":8000,"交際費":25000,"趣味":28000,"外食":12000,"交通費":8000,"勉強費":8000};
-const STORAGE_KEY="simple-budget-app-v5";
-const state=loadState();
 
-function todayString(){const d=new Date();const offset=d.getTimezoneOffset();const local=new Date(d.getTime()-offset*60000);return local.toISOString().slice(0,10)}
+<script>
+const DEFAULT_BUDGETS = {
+  "食費＋日用品": 50000,
+  "嗜好品": 10000,
+  "交際費": 38000,
+  "趣味": 38000,
+  "外食": 20000,
+  "交通費": 12000,
+  "勉強費": 26000,
+  "その他": 28000,
+};
+const STORAGE_KEY = "simple-budget-app-v7";
+const CATEGORY_ORDER = Object.keys(DEFAULT_BUDGETS);
+const state = loadState();
+
+function todayString(){
+  const d = new Date();
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+  return local.toISOString().slice(0,10);
+}
+function daysInCurrentMonth(){
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+}
+function foodWeeklyGuide(){
+  const monthly = Number(state.budgets["食費＋日用品"] || 0);
+  const weeks = daysInCurrentMonth() / 7;
+  return Math.round(monthly / weeks);
+}
+function normalizeBudgets(raw){
+  const normalized = {};
+  for (const key of CATEGORY_ORDER) normalized[key] = Math.max(0, Number(raw?.[key] || 0));
+  return normalized;
+}
 function loadState(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
-    const expenses=Array.isArray(saved.expenses)?saved.expenses.map(item=>({
-      ...item,
-      paymentMethod:item.paymentMethod||"クレジット"
-    })):[];
-    return{
-      budgets:saved.budgets||{...DEFAULT_BUDGETS},
-      carryover:Number(saved.carryover||0),
-      expenses,
-      sortKey:saved.sortKey||"date",
-      sortOrder:saved.sortOrder||"desc",
-      editingId:null
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    return {
+      budgets: normalizeBudgets(saved.budgets),
+      carryover: Math.max(0, Number(saved.carryover || 0)),
+      expenses: Array.isArray(saved.expenses) ? saved.expenses.map(item => ({
+        id: item.id || String(Date.now() + Math.random()),
+        amount: Math.max(0, Number(item.amount || 0)),
+        category: CATEGORY_ORDER.includes(item.category) ? item.category : "その他",
+        paymentMethod: item.paymentMethod === "現金" ? "現金" : "クレジット",
+        name: String(item.name || ""),
+        date: item.date || todayString(),
+        createdAt: Number(item.createdAt || Date.now())
+      })) : [],
+      sortKey: saved.sortKey || "date",
+      sortOrder: saved.sortOrder || "desc",
+      editingId: null,
     };
-  }catch(e){
-    return{budgets:{...DEFAULT_BUDGETS},carryover:0,expenses:[],sortKey:"date",sortOrder:"desc",editingId:null};
+  } catch (e) {
+    return {budgets:{...DEFAULT_BUDGETS},carryover:0,expenses:[],sortKey:"date",sortOrder:"desc",editingId:null};
   }
 }
 function saveState(){
-  const {editingId,...persisted}=state;
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(persisted));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    budgets: state.budgets,
+    carryover: state.carryover,
+    expenses: state.expenses,
+    sortKey: state.sortKey,
+    sortOrder: state.sortOrder,
+  }));
 }
-function formatYen(v){return new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(Math.round(v))}
-function formatManYen(v){if(Math.abs(v)<50)return "0.0万円";const sign=v<0?"-":"";return sign+(Math.abs(v)/10000).toFixed(1)+"万円"}
-function getEffectiveBudgets(){const base={...state.budgets};const keys=Object.keys(base);if(state.carryover>0&&keys.length){let remaining=state.carryover;const share=Math.floor(remaining/keys.length);keys.forEach(k=>base[k]+=share);remaining-=share*keys.length;for(let i=0;i<remaining;i++)base[keys[i%keys.length]]+=1}return base}
-function computeRemaining(){const remaining=getEffectiveBudgets();for(const e of state.expenses){if(typeof remaining[e.category]==="number")remaining[e.category]-=Number(e.amount||0)}return remaining}
-function totalRemaining(rem){return Object.values(rem).reduce((a,b)=>a+b,0)}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function uid(){return crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())}
+function formatYen(v){return new Intl.NumberFormat('ja-JP',{style:'currency',currency:'JPY',maximumFractionDigits:0}).format(Math.round(v));}
+function formatManYen(v){
+  const rounded = Math.round(v);
+  const sign = rounded < 0 ? '-' : '';
+  return sign + (Math.abs(rounded) / 10000).toFixed(1) + '万円';
+}
+function getEffectiveBudgets(){
+  const base = {...state.budgets};
+  const keys = CATEGORY_ORDER;
+  if (state.carryover > 0 && keys.length) {
+    let remaining = state.carryover;
+    const share = Math.floor(remaining / keys.length);
+    keys.forEach(k => base[k] += share);
+    remaining -= share * keys.length;
+    for (let i=0; i<remaining; i++) base[keys[i % keys.length]] += 1;
+  }
+  return base;
+}
+function computeRemaining(){
+  const remaining = getEffectiveBudgets();
+  for (const e of state.expenses) {
+    if (typeof remaining[e.category] === 'number') remaining[e.category] -= e.amount;
+  }
+  return remaining;
+}
+function computeUsedByCategory(){
+  const used = {};
+  CATEGORY_ORDER.forEach(cat => used[cat] = 0);
+  for (const e of state.expenses) {
+    if (typeof used[e.category] === 'number') used[e.category] += e.amount;
+  }
+  return used;
+}
+function totalBudget(){return Object.values(getEffectiveBudgets()).reduce((a,b)=>a+b,0)}
+function totalRemaining(rem){return Object.values(rem).reduce((a,b)=>a+b,0)}
+function sortedExpenses(){
+  const items = [...state.expenses];
+  items.sort((a,b)=>{
+    if (state.sortKey === 'date') return a.date.localeCompare(b.date) || b.createdAt - a.createdAt;
+    if (state.sortKey === 'category') return a.category.localeCompare(b.category) || a.date.localeCompare(b.date);
+    if (state.sortKey === 'paymentMethod') return a.paymentMethod.localeCompare(b.paymentMethod) || a.date.localeCompare(b.date);
+    if (state.sortKey === 'amount') return a.amount - b.amount || a.date.localeCompare(b.date);
+    return a.createdAt - b.createdAt;
+  });
+  if (state.sortOrder === 'desc') items.reverse();
+  return items;
+}
 
 function renderHome(){
-  const home=document.getElementById("home");
-  const remaining=computeRemaining();
-  const rows=Object.keys(remaining).map(cat=>{
-    const value=remaining[cat]||0;
-    const negative=value<0;
-    return `<div class="row ${negative?"negative":""}"><span>${cat}</span><div style="text-align:right"><div class="amt">${formatManYen(value)}</div><div class="small">${formatYen(value)}</div></div></div>`;
-  }).join("");
-  const total=totalRemaining(remaining);
-  home.innerHTML=`<div class="card"><h2>今月の予算残り</h2>${rows}<div class="row total"><span style="font-size:20px;font-weight:700">合計</span><div style="text-align:right"><div class="amt" style="font-size:28px">${formatManYen(total)}</div><div class="small">${formatYen(total)}</div></div></div><button class="btn" id="resetBtn">リセット</button></div><div class="card"><div class="hint">カテゴリ残額がマイナスになった場合は、そのカテゴリを赤字で表示します。前月の繰越額は全カテゴリへ均等配分して今月の予算に加算します。</div></div>`;
-  document.getElementById("resetBtn").onclick=()=>{
-    const ok=window.confirm("本当にリセットしますか？\n予算・繰越額・支出一覧が初期状態に戻ります。");
-    if(!ok)return;
-    state.budgets={...DEFAULT_BUDGETS};
-    state.carryover=0;
-    state.expenses=[];
-    state.sortKey="date";
-    state.sortOrder="desc";
-    state.editingId=null;
+  const home = document.getElementById('home');
+  const remaining = computeRemaining();
+  const used = computeUsedByCategory();
+  const rows = CATEGORY_ORDER.map(cat => {
+    const value = remaining[cat] || 0;
+    const negative = value < 0;
+    const extra = cat === '食費＋日用品'
+      ? `<div class="small">今月の週あたり目安：${formatYen(foodWeeklyGuide())}</div><div class="small">使用額：${formatYen(used[cat] || 0)}</div>`
+      : `<div class="small">使用額：${formatYen(used[cat] || 0)}</div>`;
+    return `<div class="row ${negative ? 'negative' : ''}"><div><div>${cat}</div>${extra}</div><div style="text-align:right"><div class="amt">${formatManYen(value)}</div><div class="small">${formatYen(value)}</div></div></div>`;
+  }).join('');
+  const total = totalRemaining(remaining);
+  home.innerHTML = `
+    <div class="card">
+      <h2>今月の予算残り</h2>
+      ${rows}
+      <div class="row total"><span style="font-size:20px;font-weight:700">合計</span><div style="text-align:right"><div class="amt" style="font-size:28px">${formatManYen(total)}</div><div class="small">${formatYen(total)}</div></div></div>
+      <button class="btn" id="resetAllBtn">全体をリセット</button>
+    </div>
+    <div class="card"><div class="hint">カテゴリ残額がマイナスになった場合は、そのカテゴリを赤字で表示します。前月の繰越額は全カテゴリへ均等配分して今月の予算に加算します。</div></div>
+  `;
+  document.getElementById('resetAllBtn').onclick = () => {
+    if (!confirm('本当にリセットしますか？\n予算設定・繰越額・支出一覧が初期状態に戻ります。')) return;
+    state.budgets = {...DEFAULT_BUDGETS};
+    state.carryover = 0;
+    state.expenses = [];
+    state.editingId = null;
     saveState();
     renderAll();
   };
 }
 
 function renderInput(){
-  const select=document.getElementById("category");
-  const current=select.value||Object.keys(state.budgets)[0];
-  select.innerHTML=Object.keys(state.budgets).map(cat=>`<option value="${cat}">${cat}</option>`).join("");
-  select.value=Object.keys(state.budgets).includes(current)?current:Object.keys(state.budgets)[0];
-  document.getElementById("date").value=document.getElementById("date").value||todayString();
-}
-
-function sortedExpenses(){
-  const items=[...state.expenses].map(item=>({...item,paymentMethod:item.paymentMethod||"クレジット"}));
-  items.sort((a,b)=>{
-    if(state.sortKey==="date")return a.date.localeCompare(b.date)||b.createdAt-a.createdAt;
-    if(state.sortKey==="category")return a.category.localeCompare(b.category)||a.date.localeCompare(b.date);
-    if(state.sortKey==="paymentMethod")return a.paymentMethod.localeCompare(b.paymentMethod)||a.date.localeCompare(b.date);
-    if(state.sortKey==="amount")return a.amount-b.amount||a.date.localeCompare(b.date);
-    return a.createdAt-b.createdAt;
+  const input = document.getElementById('input');
+  input.innerHTML = `
+    <div class="card">
+      <h2>支出を入力</h2>
+      <form id="expenseForm">
+        <div class="field"><label>金額</label><input id="amount" inputmode="numeric" placeholder="例: 1200" /></div>
+        <div class="field"><label>カテゴリ</label><select id="category">${CATEGORY_ORDER.map(cat=>`<option value="${cat}">${cat}</option>`).join('')}</select></div>
+        <div class="field"><label>支払い方法</label><select id="paymentMethod"><option value="クレジット">クレジット</option><option value="現金">現金</option></select></div>
+        <div class="field"><label>名称</label><input id="name" placeholder="例: スーパー、カフェ、映画" /></div>
+        <div class="field"><label>日付</label><input id="date" type="date" value="${todayString()}" /></div>
+        <button class="btn primary" type="submit">登録する</button>
+      </form>
+    </div>
+  `;
+  document.getElementById('expenseForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const amount = Number((document.getElementById('amount').value || '').replace(/[^0-9]/g, ''));
+    const category = document.getElementById('category').value;
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    const name = document.getElementById('name').value.trim();
+    const date = document.getElementById('date').value || todayString();
+    if (!amount || amount <= 0 || !name) return;
+    state.expenses.unshift({
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random()),
+      amount, category, paymentMethod, name, date, createdAt: Date.now()
+    });
+    saveState();
+    state.editingId = null;
+    renderAll();
+    document.getElementById('amount').value = '';
+    document.getElementById('paymentMethod').value = 'クレジット';
+    document.getElementById('name').value = '';
+    document.getElementById('date').value = todayString();
   });
-  if(state.sortOrder==="desc")items.reverse();
-  return items;
 }
 
-function renderExpenseItem(item){
-  const isEditing=state.editingId===item.id;
-  const categories=Object.keys(state.budgets).map(cat=>`<option value="${cat}" ${item.category===cat?"selected":""}>${cat}</option>`).join("");
-  return `<div class="expense">
-    <div class="expense-top">
-      <div>
-        <div class="expense-name">${escapeHtml(item.name)}</div>
-        <div class="small">${item.category} ・ ${item.paymentMethod||"クレジット"} ・ ${item.date}</div>
-        <div class="badge">${formatYen(item.amount)}</div>
-      </div>
-      <div style="text-align:right;min-width:96px">
-        <div style="font-weight:800">${formatYen(item.amount)}</div>
-        <div class="action-row">
-          <button class="link-btn edit" data-edit="${item.id}">編集</button>
-          <button class="link-btn delete" data-delete="${item.id}">削除</button>
+function expenseView(item){
+  return `
+    <div class="expense">
+      <div class="expense-top">
+        <div>
+          <div class="expense-name">${escapeHtml(item.name)}</div>
+          <div class="small">${item.category} ・ ${item.paymentMethod} ・ ${item.date}</div>
         </div>
+        <div style="text-align:right"><div style="font-weight:800">${formatYen(item.amount)}</div></div>
+      </div>
+      <div class="actions">
+        <button class="btn inline" data-edit="${item.id}">編集</button>
+        <button class="btn inline danger" data-delete="${item.id}">削除</button>
       </div>
     </div>
-    ${isEditing?`<div class="editing-box">
-      <div class="field"><label>金額</label><input type="text" inputmode="numeric" id="edit-amount-${item.id}" value="${escapeHtml(String(item.amount))}"></div>
-      <div class="field"><label>カテゴリ</label><select id="edit-category-${item.id}">${categories}</select></div>
-      <div class="field"><label>支払い方法</label><select id="edit-payment-${item.id}"><option value="クレジット" ${(item.paymentMethod||"クレジット")==="クレジット"?"selected":""}>クレジット</option><option value="現金" ${(item.paymentMethod||"クレジット")==="現金"?"selected":""}>現金</option></select></div>
-      <div class="field"><label>名称</label><input type="text" id="edit-name-${item.id}" value="${escapeHtml(item.name)}"></div>
-      <div class="field"><label>日付</label><input type="date" id="edit-date-${item.id}" value="${item.date}"></div>
-      <div class="grid2">
-        <button class="btn primary inline" data-save="${item.id}">保存する</button>
-        <button class="btn secondary inline" data-cancel="${item.id}">キャンセル</button>
+  `;
+}
+function expenseEditView(item){
+  return `
+    <div class="expense">
+      <div class="field"><label>金額</label><input data-edit-field="amount" data-id="${item.id}" inputmode="numeric" value="${item.amount}" /></div>
+      <div class="field"><label>カテゴリ</label><select data-edit-field="category" data-id="${item.id}">${CATEGORY_ORDER.map(cat=>`<option value="${cat}" ${item.category===cat?'selected':''}>${cat}</option>`).join('')}</select></div>
+      <div class="field"><label>支払い方法</label><select data-edit-field="paymentMethod" data-id="${item.id}"><option value="クレジット" ${item.paymentMethod==='クレジット'?'selected':''}>クレジット</option><option value="現金" ${item.paymentMethod==='現金'?'selected':''}>現金</option></select></div>
+      <div class="field"><label>名称</label><input data-edit-field="name" data-id="${item.id}" value="${escapeHtml(item.name)}" /></div>
+      <div class="field"><label>日付</label><input data-edit-field="date" data-id="${item.id}" type="date" value="${item.date}" /></div>
+      <div class="actions">
+        <button class="btn inline primary" data-save="${item.id}">保存</button>
+        <button class="btn inline" data-cancel="${item.id}">キャンセル</button>
       </div>
-    </div>`:""}
-  </div>`;
+    </div>
+  `;
 }
 
 function renderList(){
-  const list=document.getElementById("list");
-  const items=sortedExpenses();
-  list.innerHTML=`<div class="card"><h2>支出一覧</h2><div class="grid2"><div class="field"><label>並び替え</label><select id="sortKey"><option value="date" ${state.sortKey==="date"?"selected":""}>日付</option><option value="category" ${state.sortKey==="category"?"selected":""}>カテゴリ</option><option value="paymentMethod" ${state.sortKey==="paymentMethod"?"selected":""}>支払い方法</option><option value="amount" ${state.sortKey==="amount"?"selected":""}>金額</option><option value="created" ${state.sortKey==="created"?"selected":""}>登録順</option></select></div><div class="field"><label>順序</label><select id="sortOrder"><option value="desc" ${state.sortOrder==="desc"?"selected":""}>降順</option><option value="asc" ${state.sortOrder==="asc"?"selected":""}>昇順</option></select></div></div>${items.length?items.map(renderExpenseItem).join(""):`<div class="expense empty"><div class="small">まだ支出はありません。</div></div>`}</div>`;
+  const list = document.getElementById('list');
+  const items = sortedExpenses();
+  const used = computeUsedByCategory();
+  list.innerHTML = `
+    <div class="card">
+      <h2>支出一覧</h2>
+      <div class="grid3" style="margin-bottom:14px">
+        ${CATEGORY_ORDER.map(cat => `
+          <div class="summary-box">
+            <div class="label">${cat} の使用額</div>
+            <div class="value">${formatYen(used[cat] || 0)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="grid2">
+        <div class="field"><label>並び替え</label>
+          <select id="sortKey">
+            <option value="date" ${state.sortKey==='date'?'selected':''}>日付</option>
+            <option value="category" ${state.sortKey==='category'?'selected':''}>カテゴリ</option>
+            <option value="paymentMethod" ${state.sortKey==='paymentMethod'?'selected':''}>支払い方法</option>
+            <option value="amount" ${state.sortKey==='amount'?'selected':''}>金額</option>
+            <option value="created" ${state.sortKey==='created'?'selected':''}>登録順</option>
+          </select>
+        </div>
+        <div class="field"><label>順序</label>
+          <select id="sortOrder">
+            <option value="desc" ${state.sortOrder==='desc'?'selected':''}>降順</option>
+            <option value="asc" ${state.sortOrder==='asc'?'selected':''}>昇順</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn danger" id="resetListBtn" style="margin-bottom:14px">一覧だけリセット</button>
+      ${items.length ? items.map(item => state.editingId === item.id ? expenseEditView(item) : expenseView(item)).join('') : `<div class="expense"><div class="small">まだ支出はありません。</div></div>`}
+    </div>
+  `;
 
-  document.getElementById("sortKey").onchange=e=>{state.sortKey=e.target.value;saveState();renderList()};
-  document.getElementById("sortOrder").onchange=e=>{state.sortOrder=e.target.value;saveState();renderList()};
-
-  document.querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=()=>{state.editingId=btn.dataset.edit;renderList()});
-  document.querySelectorAll("[data-cancel]").forEach(btn=>btn.onclick=()=>{state.editingId=null;renderList()});
-  document.querySelectorAll("[data-save]").forEach(btn=>btn.onclick=()=>saveEditedExpense(btn.dataset.save));
-  document.querySelectorAll("[data-delete]").forEach(btn=>btn.onclick=()=>{
-    const ok=window.confirm("この支出を削除しますか？");
-    if(!ok)return;
-    state.expenses=state.expenses.filter(x=>x.id!==btn.dataset.delete);
-    if(state.editingId===btn.dataset.delete)state.editingId=null;
+  document.getElementById('sortKey').onchange = e => {state.sortKey = e.target.value; saveState(); renderList();};
+  document.getElementById('sortOrder').onchange = e => {state.sortOrder = e.target.value; saveState(); renderList();};
+  document.getElementById('resetListBtn').onclick = () => {
+    if (!confirm('本当に一覧だけリセットしますか？\n支出一覧だけが削除され、予算設定は残ります。')) return;
+    state.expenses = [];
+    state.editingId = null;
+    saveState();
+    renderAll();
+  };
+  document.querySelectorAll('[data-edit]').forEach(btn => btn.onclick = () => {state.editingId = btn.dataset.edit; renderList();});
+  document.querySelectorAll('[data-cancel]').forEach(btn => btn.onclick = () => {state.editingId = null; renderList();});
+  document.querySelectorAll('[data-delete]').forEach(btn => btn.onclick = () => {
+    if (!confirm('この支出を削除しますか？')) return;
+    state.expenses = state.expenses.filter(item => item.id !== btn.dataset.delete);
+    state.editingId = null;
+    saveState();
+    renderAll();
+  });
+  document.querySelectorAll('[data-save]').forEach(btn => btn.onclick = () => {
+    const id = btn.dataset.save;
+    const amount = Number((document.querySelector(`[data-edit-field="amount"][data-id="${id}"]`).value || '').replace(/[^0-9]/g, ''));
+    const category = document.querySelector(`[data-edit-field="category"][data-id="${id}"]`).value;
+    const paymentMethod = document.querySelector(`[data-edit-field="paymentMethod"][data-id="${id}"]`).value;
+    const name = document.querySelector(`[data-edit-field="name"][data-id="${id}"]`).value.trim();
+    const date = document.querySelector(`[data-edit-field="date"][data-id="${id}"]`).value || todayString();
+    if (!amount || amount <= 0 || !name) {
+      alert('金額と名称を確認してください。');
+      return;
+    }
+    state.expenses = state.expenses.map(item => item.id === id ? {...item, amount, category, paymentMethod, name, date} : item);
+    state.editingId = null;
     saveState();
     renderAll();
   });
 }
 
-function saveEditedExpense(id){
-  const amountEl=document.getElementById(`edit-amount-${id}`);
-  const categoryEl=document.getElementById(`edit-category-${id}`);
-  const paymentEl=document.getElementById(`edit-payment-${id}`);
-  const nameEl=document.getElementById(`edit-name-${id}`);
-  const dateEl=document.getElementById(`edit-date-${id}`);
-  if(!amountEl||!categoryEl||!paymentEl||!nameEl||!dateEl)return;
-  const amount=Number(String(amountEl.value).replace(/[^0-9]/g,""));
-  const category=categoryEl.value;
-  const paymentMethod=paymentEl.value;
-  const name=nameEl.value.trim();
-  const date=dateEl.value||todayString();
-  if(!amount||amount<=0||!name){window.alert("金額と名称を正しく入力してください。");return;}
-  state.expenses=state.expenses.map(item=>item.id===id?{...item,amount,category,paymentMethod,name,date}:item);
-  state.editingId=null;
-  saveState();
-  renderAll();
-}
-
 function renderBudget(){
-  const budget=document.getElementById("budget");
-  const effectiveBudgets=getEffectiveBudgets();
-  const total=Object.values(effectiveBudgets).reduce((sum,value)=>sum+value,0);
-  budget.innerHTML=`<div class="card"><h2>予算設定</h2>${Object.entries(state.budgets).map(([cat,val])=>`<div class="field"><label>${cat}</label><input type="number" min="0" step="1" data-budget="${cat}" value="${val}"></div>`).join("")}<div class="field"><label>前月の繰越額</label><input type="number" min="0" step="1" id="carryoverInput" value="${state.carryover}"><div class="small" style="margin-top:6px">繰越額は各カテゴリに均等配分して今月の予算へ加算します。</div></div><div class="row" style="background:#f8fafc"><span>今月の総予算</span><div style="text-align:right"><div class="amt">${formatManYen(total)}</div><div class="small">${formatYen(total)}</div></div></div></div>`;
-  document.querySelectorAll("[data-budget]").forEach(el=>el.addEventListener("change",e=>{const key=e.target.getAttribute("data-budget");state.budgets[key]=Math.max(0,Number(e.target.value||0));saveState();renderAll()}));
-  document.getElementById("carryoverInput").addEventListener("change",e=>{state.carryover=Math.max(0,Number(e.target.value||0));saveState();renderAll()});
+  const budget = document.getElementById('budget');
+  const effective = getEffectiveBudgets();
+  budget.innerHTML = `
+    <div class="card">
+      <h2>予算設定</h2>
+      ${CATEGORY_ORDER.map(cat => `
+        <div class="field">
+          <label>${cat}</label>
+          <input type="number" min="0" step="1" data-budget="${cat}" value="${state.budgets[cat]}">
+        </div>
+      `).join('')}
+      <div class="field">
+        <label>前月の繰越額</label>
+        <input type="number" min="0" step="1" id="carryoverInput" value="${state.carryover}">
+        <div class="small" style="margin-top:6px">繰越額は各カテゴリに均等配分して今月の予算へ加算します。</div>
+      </div>
+      <div class="row" style="background:#f8fafc">
+        <div>
+          <div>今月の総予算</div>
+          <div class="small">食費＋日用品の週あたり目安：${formatYen(foodWeeklyGuide())}</div>
+        </div>
+        <div style="text-align:right"><div class="amt">${formatManYen(totalBudget())}</div><div class="small">${formatYen(totalBudget())}</div></div>
+      </div>
+    </div>
+  `;
+  document.querySelectorAll('[data-budget]').forEach(el => el.addEventListener('change', e => {
+    const key = e.target.getAttribute('data-budget');
+    state.budgets[key] = Math.max(0, Number(e.target.value || 0));
+    saveState();
+    renderAll();
+  }));
+  document.getElementById('carryoverInput').addEventListener('change', e => {
+    state.carryover = Math.max(0, Number(e.target.value || 0));
+    saveState();
+    renderAll();
+  });
 }
 
-function renderAll(){renderHome();renderInput();renderList();renderBudget()}
+function renderAll(){renderHome();renderInput();renderList();renderBudget();}
 
-document.querySelectorAll(".tab").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.getElementById(btn.dataset.tab).classList.add("active")}});
-document.getElementById("expenseForm").addEventListener("submit",e=>{
-  e.preventDefault();
-  const amount=Number(document.getElementById("amount").value.replace(/[^0-9]/g,""));
-  const category=document.getElementById("category").value;
-  const paymentMethod=document.getElementById("paymentMethod").value;
-  const name=document.getElementById("name").value.trim();
-  const date=document.getElementById("date").value||todayString();
-  if(!amount||amount<=0||!name){window.alert("金額と名称を正しく入力してください。");return;}
-  state.expenses.unshift({id:uid(),amount,category,paymentMethod,name,date,createdAt:Date.now()});
-  saveState();
-  document.getElementById("amount").value="";
-  document.getElementById("paymentMethod").value="クレジット";
-  document.getElementById("name").value="";
-  document.getElementById("date").value=todayString();
-  renderAll();
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  };
 });
+
+saveState();
 renderAll();
 </script>
 </body>
