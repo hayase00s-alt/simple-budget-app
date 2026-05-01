@@ -3,48 +3,311 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="家計簿" />
+  <meta name="theme-color" content="#f8fafc" />
   <title>家計簿アプリ</title>
-  <meta name="theme-color" content="#0f172a" />
   <style>
-    :root{--bg:#f8fafc;--card:#fff;--ink:#0f172a;--muted:#64748b;--border:#e2e8f0;--danger:#dc2626;--danger-bg:#fef2f2;--danger-border:#fecaca}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.page{max-width:560px;margin:0 auto;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}.header{display:flex;gap:12px;align-items:center;margin-bottom:20px}.badge{width:48px;height:48px;border-radius:18px;background:#fff;box-shadow:0 1px 4px rgba(15,23,42,.08);display:grid;place-items:center;font-size:24px;flex:none}h1{margin:0;font-size:24px;letter-spacing:-.3px}.subtitle{margin-top:3px;color:var(--muted);font-size:13px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#e2e8f0;padding:4px;border-radius:18px;margin-bottom:16px;position:sticky;top:8px;z-index:2}.tab{border:0;border-radius:14px;padding:10px 4px;background:transparent;color:#475569;font-weight:800;font-size:13px;cursor:pointer}.tab.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.1)}.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:0 1px 4px rgba(15,23,42,.06);overflow:hidden}.card-header{padding:18px 18px 8px}.card-title{margin:0;font-size:20px;font-weight:900}.card-content{padding:18px;display:flex;flex-direction:column;gap:12px}.budget-row,.total-budget-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--border);background:#fff;border-radius:18px;padding:12px 14px}.budget-row.low{border-color:var(--danger-border);background:var(--danger-bg)}.category-name{font-weight:800;font-size:15px}.small{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.4}.amount{text-align:right;white-space:nowrap}.amount-main{font-size:18px;font-weight:900}.amount-sub{margin-top:2px;font-size:12px;color:var(--muted)}.red{color:var(--danger)}.total-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:18px;padding:14px 16px;margin-top:4px}.total-label{font-size:18px;font-weight:900}.total-main{font-size:24px;font-weight:900}.total-sub{margin-top:2px;font-size:12px;color:#cbd5e1}form,.stack{display:flex;flex-direction:column;gap:12px}.field{display:flex;flex-direction:column;gap:7px}label{font-size:13px;font-weight:800;color:#334155}input,select{width:100%;height:48px;border-radius:16px;border:1px solid #cbd5e1;padding:0 14px;font-size:16px;background:#fff;color:var(--ink)}button.primary{width:100%;height:48px;border-radius:16px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-size:16px;font-weight:900;cursor:pointer}button.outline,button.danger{min-height:44px;border-radius:16px;font-size:14px;font-weight:900;padding:0 14px;cursor:pointer}button.outline{border:1px solid #cbd5e1;background:#fff;color:var(--ink)}button.danger{border:1px solid var(--danger);background:var(--danger);color:#fff}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat-card{border:1px solid var(--border);background:var(--bg);border-radius:18px;padding:14px}.stat-label{color:var(--muted);font-size:12px}.stat-value{margin-top:4px;font-size:20px;font-weight:900}.list-box{border:1px solid var(--border);background:#fff;border-radius:18px;padding:14px;color:#475569;font-size:13px}.expense-item{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-top:8px}.expense-name{color:var(--ink);font-weight:900}.reset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.row-between{display:flex;justify-content:space-between;align-items:center;gap:10px}.hidden{display:none}
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 16px;
+    }
+    .shell { max-width: 560px; margin: 0 auto; }
+    .header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .badge { width: 48px; height: 48px; border-radius: 18px; background: #fff; box-shadow: 0 1px 4px rgba(15,23,42,.08); display:flex; align-items:center; justify-content:center; font-size:24px; }
+    h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.3px; }
+    .subtitle { margin: 3px 0 0; color:#64748b; font-size:13px; }
+    .tabs { display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; background:#e2e8f0; padding:4px; border-radius:18px; margin-bottom:16px; }
+    .tab-btn { border:0; border-radius:14px; padding:10px 6px; font-size:13px; font-weight:700; background:transparent; color:#475569; cursor:pointer; }
+    .tab-btn.active { background:#fff; color:#0f172a; box-shadow:0 1px 3px rgba(15,23,42,.1); }
+    .card { background:#fff; border:1px solid #e2e8f0; border-radius:24px; box-shadow:0 1px 4px rgba(15,23,42,.06); overflow:hidden; }
+    .card-header { padding:18px 18px 8px; }
+    .card-title { margin:0; font-size:20px; font-weight:800; }
+    .card-content { padding:18px; }
+    .stack { display:flex; flex-direction:column; gap:12px; }
+    .budget-row { display:flex; justify-content:space-between; align-items:center; gap:12px; border:1px solid #e2e8f0; background:#fff; border-radius:18px; padding:12px 14px; }
+    .budget-row.low { border-color:#fecaca; background:#fef2f2; }
+    .cat-name { font-weight:700; font-size:15px; }
+    .small { color:#64748b; font-size:12px; margin-top:4px; line-height:1.35; }
+    .amount-block { text-align:right; white-space:nowrap; }
+    .amount-main { font-weight:800; font-size:18px; }
+    .amount-sub { font-size:12px; color:#64748b; margin-top:2px; }
+    .red { color:#dc2626 !important; }
+    .total-row { display:flex; justify-content:space-between; align-items:center; gap:12px; background:#0f172a; color:#fff; border-radius:18px; padding:14px 16px; margin-top:4px; }
+    .total-label { font-size:18px; font-weight:800; }
+    .total-main { font-size:24px; font-weight:900; }
+    .total-sub { font-size:12px; color:#cbd5e1; margin-top:2px; }
+    .form-group { display:flex; flex-direction:column; gap:7px; }
+    label { font-size:13px; font-weight:700; color:#334155; }
+    input, select { height:48px; border-radius:16px; border:1px solid #cbd5e1; padding:0 14px; font-size:16px; background:#fff; color:#0f172a; width:100%; }
+    .primary-btn { height:48px; border-radius:16px; border:1px solid #0f172a; background:#0f172a; color:#fff; font-size:16px; font-weight:800; width:100%; cursor:pointer; }
+    .outline-btn { min-height:44px; border-radius:16px; border:1px solid #cbd5e1; background:#fff; color:#0f172a; font-size:14px; font-weight:800; padding:0 14px; cursor:pointer; }
+    .danger-btn { min-height:44px; border-radius:16px; border:1px solid #dc2626; background:#dc2626; color:#fff; font-size:14px; font-weight:800; padding:0 14px; cursor:pointer; }
+    .grid2 { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:10px; }
+    .filters { display:grid; grid-template-columns:1fr; gap:10px; }
+    .stat-card { border:1px solid #e2e8f0; background:#f8fafc; border-radius:18px; padding:14px; }
+    .stat-label { color:#64748b; font-size:12px; }
+    .stat-value { margin-top:4px; font-size:20px; font-weight:900; }
+    .list-box { border:1px solid #e2e8f0; background:#fff; border-radius:18px; padding:14px; font-size:13px; color:#475569; }
+    .expense-item { display:flex; justify-content:space-between; gap:10px; align-items:center; border:1px solid #e2e8f0; border-radius:14px; padding:10px 12px; margin-top:8px; }
+    .expense-name { color:#0f172a; font-weight:800; }
+    .edit-form { display:flex; flex-direction:column; gap:8px; width:100%; }
+    .two-btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .note { color:#64748b; font-size:13px; }
+    .hidden { display:none; }
   </style>
 </head>
 <body>
-  <main class="page">
-    <header class="header"><div class="badge">💰</div><div><h1>家計簿アプリ</h1><div class="subtitle">カテゴリ予算の残りがすぐわかるシンプル版</div></div></header>
-    <nav class="tabs" aria-label="タブ"><button class="tab active" data-tab="home">トップ</button><button class="tab" data-tab="input">入力</button><button class="tab" data-tab="list">一覧</button><button class="tab" data-tab="budget">予算設定</button></nav>
-    <section id="tab-home" class="tab-panel"></section><section id="tab-input" class="tab-panel hidden"></section><section id="tab-list" class="tab-panel hidden"></section><section id="tab-budget" class="tab-panel hidden"></section>
-  </main>
+  <div class="shell">
+    <div class="header">
+      <div class="badge">💰</div>
+      <div>
+        <h1>家計簿アプリ</h1>
+        <p class="subtitle">カテゴリ予算の残りがすぐわかるシンプル版</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="home">トップ</button>
+      <button class="tab-btn" data-tab="input">入力</button>
+      <button class="tab-btn" data-tab="list">一覧</button>
+      <button class="tab-btn" data-tab="budget">予算設定</button>
+    </div>
+
+    <main id="app"></main>
+  </div>
+
   <script>
-    const DEFAULT_BUDGETS={"食費＋日用品":60000,"嗜好品":18000,"交際費":20000,"趣味":38000,"外食":31000,"交通費":12000,"勉強費":25000,"その他":15000};
-    const CATEGORIES=Object.keys(DEFAULT_BUDGETS), STORAGE_KEY="simple-budget-ios-app-final-v1", LOW_BUDGET_THRESHOLD=5000;
-    let state={activeTab:"home",budgets:{...DEFAULT_BUDGETS},expenses:[],extraIncome:0,categoryFilter:"all",paymentFilter:"all",dateSort:"desc",confirmingBudgetReset:false,confirmingListReset:false};
-    const yen=v=>new Intl.NumberFormat("ja-JP",{style:"currency",currency:"JPY",maximumFractionDigits:0}).format(Math.round(Number(v)||0));
-    const manYen=v=>`${(Math.round(Number(v)||0)/10000).toFixed(1)}万`;
-    const sumValues=obj=>Object.values(obj).reduce((s,v)=>s+(Number(v)||0),0);
-    function todayString(){const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`}
-    const normalizeBudgetValue=v=>Math.max(0,Math.round(Number(v)||0));
-    function normalizeBudgets(saved){const n={...DEFAULT_BUDGETS}; if(!saved||typeof saved!=="object")return n; CATEGORIES.forEach(c=>{const v=saved[c]; if(typeof v==="number"&&Number.isFinite(v))n[c]=normalizeBudgetValue(v)}); return n}
-    const normalizeExtraIncome=normalizeBudgetValue;
-    function normalizeExpenses(saved){if(!Array.isArray(saved))return []; return saved.filter(i=>i&&typeof i==="object").filter(i=>CATEGORIES.includes(i.category)).map((i,x)=>({id:typeof i.id==="string"&&i.id?i.id:`expense-${x}`,amount:normalizeBudgetValue(i.amount),category:i.category,paymentMethod:i.paymentMethod==="クレジット"?"クレジット":"現金",name:typeof i.name==="string"&&i.name.trim()?i.name.trim():"名称未設定",date:typeof i.date==="string"&&i.date?i.date:todayString(),createdAt:Number.isFinite(Number(i.createdAt))?Number(i.createdAt):Date.now()+x})).filter(i=>i.amount>0)}
-    function getFoodGuideStatus(monthBudget,now=new Date()){const b=normalizeBudgetValue(monthBudget),days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),weeks=Math.max(1,Math.ceil(days/7)),weekly=b/weeks,elapsed=Math.min(weeks,Math.max(1,Math.ceil(now.getDate()/7))),spent=Math.min(b,weekly*elapsed);return{weeksInMonth:weeks,weeklyBudget:Math.round(weekly),elapsedWeeks:elapsed,expectedRemaining:Math.max(0,Math.round(b-spent))}}
-    function createExpenseId(){try{if(window.crypto&&typeof window.crypto.randomUUID==="function")return window.crypto.randomUUID()}catch(e){} return `expense-${Date.now()}-${Math.random().toString(36).slice(2,8)}`}
-    function remainingByCategory(){const r={...state.budgets}; state.expenses.forEach(e=>{if(typeof r[e.category]==="number")r[e.category]-=e.amount}); return r}
-    function usedByCategory(){const u={}; CATEGORIES.forEach(c=>u[c]=0); state.expenses.forEach(e=>{if(typeof u[e.category]==="number")u[e.category]+=e.amount}); return u}
-    function filteredExpenses(){let items=state.expenses.slice(); if(state.categoryFilter!=="all")items=items.filter(i=>i.category===state.categoryFilter); if(state.paymentFilter!=="all")items=items.filter(i=>i.paymentMethod===state.paymentFilter); items.sort((a,b)=>{const res=a.date.localeCompare(b.date)||(a.createdAt-b.createdAt); return state.dateSort==="asc"?res:-res}); return items}
-    function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({budgets:normalizeBudgets(state.budgets),expenses:normalizeExpenses(state.expenses),extraIncome:normalizeExtraIncome(state.extraIncome)}))}catch(e){console.error("保存に失敗しました",e)}}
-    function load(){try{const saved=localStorage.getItem(STORAGE_KEY); if(!saved)return; const p=JSON.parse(saved); state.budgets=normalizeBudgets(p.budgets); state.expenses=normalizeExpenses(p.expenses); state.extraIncome=normalizeExtraIncome(p.extraIncome)}catch(e){console.error("読み込みに失敗しました",e)}}
-    function escapeHtml(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-    function setActiveTab(tab){state.activeTab=tab;state.confirmingBudgetReset=false;state.confirmingListReset=false;render()}
-    function renderTabs(){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===state.activeTab)); document.querySelectorAll(".tab-panel").forEach(p=>p.classList.add("hidden")); document.getElementById(`tab-${state.activeTab}`).classList.remove("hidden")}
-    function renderHome(){const r=remainingByCategory(),u=usedByCategory(),food=getFoodGuideStatus(state.budgets["食費＋日用品"]),total=sumValues(r)+normalizeExtraIncome(state.extraIncome); document.getElementById("tab-home").innerHTML=`<div class="card"><div class="card-header"><h2 class="card-title">今月の予算残り</h2></div><div class="card-content">${CATEGORIES.map(c=>{const v=r[c]||0,low=v<=LOW_BUDGET_THRESHOLD;return `<div class="budget-row ${low?"low":""}"><div><div class="category-name">${c}</div><div class="small">使用額: ${yen(u[c]||0)}</div>${c==="食費＋日用品"?`<div class="small">今月は${food.weeksInMonth}週換算・週あたり目安 ${yen(food.weeklyBudget)} ／ 現時点の目安残額 ${yen(food.expectedRemaining)}</div>`:""}</div><div class="amount"><div class="amount-main ${low?"red":""}">${manYen(v)}</div><div class="amount-sub ${low?"red":""}">${yen(v)}</div></div></div>`}).join("")}<div class="total-row"><span class="total-label">合計</span><div class="amount"><div class="total-main">${manYen(total)}</div><div class="total-sub">${yen(total)}</div></div></div></div></div>`}
-    function renderInput(){document.getElementById("tab-input").innerHTML=`<div class="card"><div class="card-header"><h2 class="card-title">✍️ 支出を入力</h2></div><div class="card-content"><form id="expense-form"><div class="field"><label for="amount">金額</label><input id="amount" inputmode="numeric" placeholder="例: 1200" /></div><div class="field"><label for="category">カテゴリ</label><select id="category">${CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join("")}</select></div><div class="field"><label for="paymentMethod">支払い方法</label><select id="paymentMethod"><option value="現金">現金</option><option value="クレジット">クレジット</option></select></div><div class="field"><label for="name">名称</label><input id="name" placeholder="例: スーパー、映画、飲み会" /></div><div class="field"><label for="date">日付</label><input id="date" type="date" value="${todayString()}" /></div><button class="primary" type="submit">登録する</button></form></div></div>`; document.getElementById("amount").addEventListener("input",e=>e.target.value=e.target.value.replace(/[^0-9]/g,"")); document.getElementById("expense-form").addEventListener("submit",e=>{e.preventDefault(); const amount=normalizeBudgetValue(document.getElementById("amount").value), category=document.getElementById("category").value, paymentMethod=document.getElementById("paymentMethod").value, name=document.getElementById("name").value.trim(), date=document.getElementById("date").value||todayString(); if(!amount||!name)return; state.expenses.unshift({id:createExpenseId(),amount,category,paymentMethod,name,date,createdAt:Date.now()}); save(); setActiveTab("home")})}
-    function renderList(){const items=filteredExpenses(),total=state.expenses.reduce((s,i)=>s+i.amount,0),credit=state.expenses.filter(i=>i.paymentMethod==="クレジット").reduce((s,i)=>s+i.amount,0); document.getElementById("tab-list").innerHTML=`<div class="card"><div class="card-header"><div class="row-between"><h2 class="card-title">📋 一覧・集計</h2><div>${state.confirmingListReset?`<button class="danger" id="confirm-list-reset" type="button">本当にリセット</button> <button class="outline" id="cancel-list-reset" type="button">キャンセル</button>`:`<button class="outline" id="start-list-reset" type="button">一覧だけリセット</button>`}</div></div></div><div class="card-content"><div class="grid2"><div class="stat-card"><div class="stat-label">支出総額</div><div class="stat-value">${yen(total)}</div></div><div class="stat-card"><div class="stat-label">クレジット利用総額</div><div class="stat-value">${yen(credit)}</div></div></div><div class="field"><label for="categoryFilter">カテゴリで絞り込み</label><select id="categoryFilter"><option value="all">すべて</option>${CATEGORIES.map(c=>`<option value="${c}" ${state.categoryFilter===c?"selected":""}>${c}</option>`).join("")}</select></div><div class="field"><label for="paymentFilter">支払い方法で絞り込み</label><select id="paymentFilter"><option value="all" ${state.paymentFilter==="all"?"selected":""}>すべて</option><option value="現金" ${state.paymentFilter==="現金"?"selected":""}>現金</option><option value="クレジット" ${state.paymentFilter==="クレジット"?"selected":""}>クレジット</option></select></div><div class="field"><label for="dateSort">日付順</label><select id="dateSort"><option value="desc" ${state.dateSort==="desc"?"selected":""}>新しい順</option><option value="asc" ${state.dateSort==="asc"?"selected":""}>古い順</option></select></div><div class="list-box"><div>絞り込み結果: ${items.length}件</div>${items.length?`${items.slice(0,8).map(i=>`<div class="expense-item"><div><div class="expense-name">${escapeHtml(i.name)}</div><div class="small">${i.date} ・ ${i.category} ・ ${i.paymentMethod}</div></div><div style="font-weight:900;color:#0f172a;">${yen(i.amount)}</div></div>`).join("")}${items.length>8?`<div class="small">最新8件まで表示</div>`:""}`:`<div class="small">条件に一致する支出はありません。</div>`}</div></div></div>`; const s=document.getElementById("start-list-reset"); if(s)s.onclick=()=>{state.confirmingListReset=true;render()}; const c=document.getElementById("confirm-list-reset"); if(c)c.onclick=()=>{state.expenses=[];state.confirmingListReset=false;save();render()}; const x=document.getElementById("cancel-list-reset"); if(x)x.onclick=()=>{state.confirmingListReset=false;render()}; document.getElementById("categoryFilter").onchange=e=>{state.categoryFilter=e.target.value;render()}; document.getElementById("paymentFilter").onchange=e=>{state.paymentFilter=e.target.value;render()}; document.getElementById("dateSort").onchange=e=>{state.dateSort=e.target.value;render()}}
-    function renderBudget(){document.getElementById("tab-budget").innerHTML=`<div class="card"><div class="card-header"><h2 class="card-title">予算設定</h2></div><div class="card-content">${CATEGORIES.map(c=>`<div class="field"><label for="budget-${c}">${c} <span style="color:#64748b;">（初期値: ${manYen(DEFAULT_BUDGETS[c])}）</span></label><input id="budget-${c}" data-budget-category="${c}" type="number" inputmode="numeric" value="${state.budgets[c]}" /></div>`).join("")}<div class="field"><label for="extraIncome">追加収入</label><input id="extraIncome" type="number" inputmode="numeric" value="${state.extraIncome}" /><div class="small">今月だけの追加収入を入力すると、今月の総予算に上乗せされます。</div></div><div class="total-budget-row"><div><div class="category-name">今月の総予算</div><div class="small">初期値の合計: ${manYen(sumValues(DEFAULT_BUDGETS))}</div></div><div class="amount"><div class="amount-main">${manYen(sumValues(state.budgets)+normalizeExtraIncome(state.extraIncome))}</div><div class="amount-sub">${yen(sumValues(state.budgets)+normalizeExtraIncome(state.extraIncome))}</div></div></div><div>${state.confirmingBudgetReset?`<div class="reset-grid"><button class="danger" id="confirm-budget-reset" type="button">本当にリセット</button><button class="outline" id="cancel-budget-reset" type="button">キャンセル</button></div>`:`<button class="outline" id="start-budget-reset" type="button">↺ 予算額だけリセット</button>`}</div><div class="small">美容院は別途</div></div></div>`; document.querySelectorAll("[data-budget-category]").forEach(input=>input.oninput=e=>{state.budgets[e.target.dataset.budgetCategory]=normalizeBudgetValue(e.target.value); save(); renderBudget()}); document.getElementById("extraIncome").oninput=e=>{state.extraIncome=normalizeExtraIncome(e.target.value); save(); renderBudget()}; const s=document.getElementById("start-budget-reset"); if(s)s.onclick=()=>{state.confirmingBudgetReset=true;render()}; const c=document.getElementById("confirm-budget-reset"); if(c)c.onclick=()=>{state.budgets={...DEFAULT_BUDGETS}; state.extraIncome=0; state.confirmingBudgetReset=false; save(); render()}; const x=document.getElementById("cancel-budget-reset"); if(x)x.onclick=()=>{state.confirmingBudgetReset=false;render()}}
-    function render(){renderTabs(); if(state.activeTab==="home")renderHome(); if(state.activeTab==="input")renderInput(); if(state.activeTab==="list")renderList(); if(state.activeTab==="budget")renderBudget()}
-    function runSelfTests(){console.assert(!("光熱費" in normalizeBudgets({光熱費:99999})),"削除カテゴリは復活しない"); console.assert(normalizeExtraIncome(-500)===0,"追加収入はマイナス不可"); const guide=getFoodGuideStatus(60000,new Date("2026-04-15T09:00:00")); console.assert(guide.weeklyBudget===12000,"週あたり目安が正しく計算される"); console.assert(Array.isArray(filteredExpenses()),"絞り込み結果は配列")}
-    document.querySelectorAll(".tab").forEach(button=>button.addEventListener("click",()=>setActiveTab(button.dataset.tab)));
-    load(); runSelfTests(); render();
+    const DEFAULT_BUDGETS = {
+      "食費＋日用品": 60000,
+      "嗜好品": 18000,
+      "交際費": 20000,
+      "趣味": 38000,
+      "外食": 31000,
+      "交通費": 12000,
+      "勉強費": 25000,
+      "その他": 15000,
+    };
+    const CATEGORIES = Object.keys(DEFAULT_BUDGETS);
+    const STORAGE_KEY = "simple-budget-ios-app-standalone-v1";
+    const LOW_BUDGET_THRESHOLD = 5000;
+
+    let state = {
+      activeTab: "home",
+      budgets: { ...DEFAULT_BUDGETS },
+      expenses: [],
+      extraIncome: 0,
+      categoryFilter: "all",
+      paymentFilter: "all",
+      dateSort: "desc",
+      isConfirmingBudgetReset: false,
+      isConfirmingListReset: false,
+      editingExpenseId: null,
+      editExpenseForm: null,
+    };
+
+    const app = document.getElementById("app");
+
+    function formatYen(value) {
+      return new Intl.NumberFormat("ja-JP", { style: "currency", currency: "JPY", maximumFractionDigits: 0 }).format(Math.round(Number(value) || 0));
+    }
+    function formatManYen(value) { return `${(Math.round(Number(value) || 0) / 10000).toFixed(1)}万`; }
+    function sumValues(obj) { return Object.values(obj).reduce((sum, value) => sum + (Number(value) || 0), 0); }
+    function normalizeBudgetValue(value) { return Math.max(0, Math.round(Number(value) || 0)); }
+    function todayString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    }
+    function normalizeBudgets(savedBudgets) {
+      const normalized = { ...DEFAULT_BUDGETS };
+      if (!savedBudgets || typeof savedBudgets !== "object") return normalized;
+      CATEGORIES.forEach((cat) => {
+        if (typeof savedBudgets[cat] === "number" && Number.isFinite(savedBudgets[cat])) normalized[cat] = normalizeBudgetValue(savedBudgets[cat]);
+      });
+      return normalized;
+    }
+    function normalizeExpenses(items) {
+      if (!Array.isArray(items)) return [];
+      return items.filter((item) => item && typeof item === "object" && CATEGORIES.includes(item.category)).map((item, index) => ({
+        id: typeof item.id === "string" && item.id ? item.id : `expense-${index}`,
+        amount: normalizeBudgetValue(item.amount),
+        category: item.category,
+        paymentMethod: item.paymentMethod === "クレジット" ? "クレジット" : "現金",
+        name: typeof item.name === "string" && item.name.trim() ? item.name.trim() : "名称未設定",
+        date: typeof item.date === "string" && item.date ? item.date : todayString(),
+        createdAt: Number.isFinite(Number(item.createdAt)) ? Number(item.createdAt) : Date.now() + index,
+      })).filter((item) => item.amount > 0);
+    }
+    function getFoodGuideStatus(monthBudget) {
+      const now = new Date();
+      const budget = normalizeBudgetValue(monthBudget);
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const weeksInMonth = Math.max(1, Math.ceil(daysInMonth / 7));
+      const weeklyBudget = budget / weeksInMonth;
+      const elapsedWeeks = Math.min(weeksInMonth, Math.max(1, Math.ceil(now.getDate() / 7)));
+      const expectedSpent = Math.min(budget, weeklyBudget * elapsedWeeks);
+      return { weeksInMonth, weeklyBudget: Math.round(weeklyBudget), expectedRemaining: Math.max(0, Math.round(budget - expectedSpent)) };
+    }
+    function buildRemainingByCategory() {
+      const remaining = { ...state.budgets };
+      state.expenses.forEach((expense) => { if (typeof remaining[expense.category] === "number") remaining[expense.category] -= expense.amount; });
+      return remaining;
+    }
+    function buildUsedByCategory() {
+      const used = {};
+      CATEGORIES.forEach((cat) => used[cat] = 0);
+      state.expenses.forEach((expense) => { if (typeof used[expense.category] === "number") used[expense.category] += expense.amount; });
+      return used;
+    }
+    function filteredExpenses() {
+      let items = state.expenses.slice();
+      if (state.categoryFilter !== "all") items = items.filter((item) => item.category === state.categoryFilter);
+      if (state.paymentFilter !== "all") items = items.filter((item) => item.paymentMethod === state.paymentFilter);
+      items.sort((a, b) => {
+        const result = a.date.localeCompare(b.date) || a.createdAt - b.createdAt;
+        return state.dateSort === "asc" ? result : -result;
+      });
+      return items;
+    }
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ budgets: state.budgets, expenses: state.expenses, extraIncome: state.extraIncome }));
+    }
+    function load() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (!saved) return;
+        state.budgets = normalizeBudgets(saved.budgets);
+        state.expenses = normalizeExpenses(saved.expenses);
+        state.extraIncome = normalizeBudgetValue(saved.extraIncome);
+      } catch (e) { console.error(e); }
+    }
+    function setTab(tab) {
+      state.activeTab = tab;
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
+      render();
+    }
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>'"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[ch]));
+    }
+    function optionHtml(options, selected) {
+      return options.map(([value, label]) => `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(label)}</option>`).join("");
+    }
+
+    function renderHome() {
+      const remaining = buildRemainingByCategory();
+      const used = buildUsedByCategory();
+      const totalRemaining = sumValues(remaining) + normalizeBudgetValue(state.extraIncome);
+      const food = getFoodGuideStatus(state.budgets["食費＋日用品"] || 0);
+      return `<section class="card"><div class="card-header"><h2 class="card-title">今月の予算残り</h2></div><div class="card-content stack">
+        ${CATEGORIES.map(cat => {
+          const rem = remaining[cat] || 0;
+          const low = rem <= LOW_BUDGET_THRESHOLD;
+          return `<div class="budget-row ${low ? "low" : ""}"><div><div class="cat-name">${escapeHtml(cat)}</div><div class="small">使用額: ${formatYen(used[cat] || 0)}</div>${cat === "食費＋日用品" ? `<div class="small">今月は${food.weeksInMonth}週換算・週あたり目安 ${formatYen(food.weeklyBudget)} ／ 現時点の目安残額 ${formatYen(food.expectedRemaining)}</div>` : ""}</div><div class="amount-block"><div class="amount-main ${low ? "red" : ""}">${formatManYen(rem)}</div><div class="amount-sub ${low ? "red" : ""}">${formatYen(rem)}</div></div></div>`;
+        }).join("")}
+        <div class="total-row"><span class="total-label">合計</span><div class="amount-block"><div class="total-main">${formatManYen(totalRemaining)}</div><div class="total-sub">${formatYen(totalRemaining)}</div></div></div>
+      </div></section>`;
+    }
+    function renderInput() {
+      return `<section class="card"><div class="card-header"><h2 class="card-title">✍️ 支出を入力</h2></div><div class="card-content"><form id="expense-form" class="stack">
+        <div class="form-group"><label for="amount">金額</label><input id="amount" inputmode="numeric" placeholder="例: 1200" /></div>
+        <div class="form-group"><label for="category">カテゴリ</label><select id="category">${optionHtml(CATEGORIES.map(c => [c,c]), CATEGORIES[0])}</select></div>
+        <div class="form-group"><label for="paymentMethod">支払い方法</label><select id="paymentMethod">${optionHtml([["現金","現金"],["クレジット","クレジット"]], "現金")}</select></div>
+        <div class="form-group"><label for="name">名称</label><input id="name" placeholder="例: スーパー、映画、飲み会" /></div>
+        <div class="form-group"><label for="date">日付</label><input id="date" type="date" value="${todayString()}" /></div>
+        <button class="primary-btn" type="submit">登録する</button>
+      </form></div></section>`;
+    }
+    function renderList() {
+      const items = filteredExpenses();
+      const totalSpent = state.expenses.reduce((sum, item) => sum + item.amount, 0);
+      const totalCredit = state.expenses.filter(item => item.paymentMethod === "クレジット").reduce((sum, item) => sum + item.amount, 0);
+      return `<section class="card"><div class="card-header"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;"><h2 class="card-title">📋 一覧・集計</h2>${state.isConfirmingListReset ? `<div style="display:flex;gap:8px;"><button class="danger-btn" id="confirm-list-reset">本当にリセット</button><button class="outline-btn" id="cancel-list-reset">キャンセル</button></div>` : `<button class="outline-btn" id="list-reset">一覧だけリセット</button>`}</div></div><div class="card-content stack">
+        <div class="grid2"><div class="stat-card"><div class="stat-label">支出総額</div><div class="stat-value">${formatYen(totalSpent)}</div></div><div class="stat-card"><div class="stat-label">クレジット利用総額</div><div class="stat-value">${formatYen(totalCredit)}</div></div></div>
+        <div class="filters"><div class="form-group"><label>カテゴリで絞り込み</label><select id="categoryFilter">${optionHtml([["all","すべて"], ...CATEGORIES.map(c => [c,c])], state.categoryFilter)}</select></div><div class="form-group"><label>支払い方法で絞り込み</label><select id="paymentFilter">${optionHtml([["all","すべて"],["現金","現金"],["クレジット","クレジット"]], state.paymentFilter)}</select></div><div class="form-group"><label>日付順</label><select id="dateSort">${optionHtml([["desc","新しい順"],["asc","古い順"]], state.dateSort)}</select></div></div>
+        <div class="list-box"><div>絞り込み結果: ${items.length}件</div>${items.length ? items.slice(0,8).map(item => renderExpenseItem(item)).join("") + (items.length > 8 ? `<div class="small">最新8件まで表示</div>` : "") : `<div class="small">条件に一致する支出はありません。</div>`}</div>
+      </div></section>`;
+    }
+    function renderExpenseItem(item) {
+      if (state.editingExpenseId === item.id && state.editExpenseForm) {
+        const f = state.editExpenseForm;
+        return `<div class="expense-item"><div class="edit-form"><input id="editAmount" inputmode="numeric" value="${escapeHtml(f.amount)}" /><select id="editCategory">${optionHtml(CATEGORIES.map(c => [c,c]), f.category)}</select><select id="editPayment">${optionHtml([["現金","現金"],["クレジット","クレジット"]], f.paymentMethod)}</select><input id="editName" value="${escapeHtml(f.name)}" /><input id="editDate" type="date" value="${escapeHtml(f.date)}" /><div class="two-btns"><button class="primary-btn" id="save-edit">保存</button><button class="outline-btn" id="cancel-edit">キャンセル</button></div></div></div>`;
+      }
+      return `<div class="expense-item"><div><div class="expense-name">${escapeHtml(item.name)}</div><div class="small">${escapeHtml(item.date)} ・ ${escapeHtml(item.category)} ・ ${escapeHtml(item.paymentMethod)}</div></div><div style="text-align:right;"><div style="font-weight:800;color:#0f172a;">${formatYen(item.amount)}</div><button class="outline-btn edit-btn" data-id="${escapeHtml(item.id)}" style="margin-top:6px;min-height:34px;font-size:12px;">編集</button></div></div>`;
+    }
+    function renderBudget() {
+      return `<section class="card"><div class="card-header"><h2 class="card-title">予算設定</h2></div><div class="card-content stack">
+        ${CATEGORIES.map(cat => `<div class="form-group"><label for="budget-${escapeHtml(cat)}">${escapeHtml(cat)} <span style="color:#64748b;">（初期値: ${formatManYen(DEFAULT_BUDGETS[cat])}）</span></label><input class="budget-input" data-cat="${escapeHtml(cat)}" id="budget-${escapeHtml(cat)}" type="number" inputmode="numeric" value="${state.budgets[cat]}" /></div>`).join("")}
+        <div class="form-group"><label for="extra-income">追加収入</label><input id="extra-income" type="number" inputmode="numeric" value="${normalizeBudgetValue(state.extraIncome)}" /><div class="small">今月だけの追加収入を入力すると、今月の総予算に上乗せされます。</div></div>
+        <div class="budget-row" style="background:#f8fafc;"><div><div class="cat-name">今月の総予算</div><div class="small">初期値の合計: ${formatManYen(sumValues(DEFAULT_BUDGETS))}</div></div><div class="amount-block"><div class="amount-main">${formatManYen(sumValues(state.budgets) + normalizeBudgetValue(state.extraIncome))}</div><div class="amount-sub">${formatYen(sumValues(state.budgets) + normalizeBudgetValue(state.extraIncome))}</div></div></div>
+        ${state.isConfirmingBudgetReset ? `<div class="two-btns"><button class="danger-btn" id="confirm-budget-reset">本当にリセット</button><button class="outline-btn" id="cancel-budget-reset">キャンセル</button></div>` : `<button class="outline-btn" id="budget-reset">↺ 予算額だけリセット</button>`}
+        <div class="note">美容院は別途</div>
+      </div></section>`;
+    }
+    function render() {
+      app.innerHTML = state.activeTab === "home" ? renderHome() : state.activeTab === "input" ? renderInput() : state.activeTab === "list" ? renderList() : renderBudget();
+      bindEvents();
+    }
+    function bindEvents() {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.onclick = () => setTab(btn.dataset.tab));
+      const form = document.getElementById("expense-form");
+      if (form) form.onsubmit = (e) => {
+        e.preventDefault();
+        const amount = normalizeBudgetValue(document.getElementById("amount").value);
+        const name = document.getElementById("name").value.trim();
+        if (!amount || !name) return;
+        state.expenses.unshift({ id: `expense-${Date.now()}-${Math.random().toString(36).slice(2,8)}`, amount, category: document.getElementById("category").value, paymentMethod: document.getElementById("paymentMethod").value, name, date: document.getElementById("date").value || todayString(), createdAt: Date.now() });
+        save();
+        render();
+      };
+      const catFilter = document.getElementById("categoryFilter");
+      if (catFilter) catFilter.onchange = e => { state.categoryFilter = e.target.value; render(); };
+      const payFilter = document.getElementById("paymentFilter");
+      if (payFilter) payFilter.onchange = e => { state.paymentFilter = e.target.value; render(); };
+      const dateSort = document.getElementById("dateSort");
+      if (dateSort) dateSort.onchange = e => { state.dateSort = e.target.value; render(); };
+      document.querySelectorAll(".edit-btn").forEach(btn => btn.onclick = () => {
+        const item = state.expenses.find(x => x.id === btn.dataset.id);
+        if (!item) return;
+        state.editingExpenseId = item.id;
+        state.editExpenseForm = { amount: String(item.amount), category: item.category, paymentMethod: item.paymentMethod, name: item.name, date: item.date };
+        render();
+      });
+      const saveEdit = document.getElementById("save-edit");
+      if (saveEdit) saveEdit.onclick = () => {
+        const amount = normalizeBudgetValue(document.getElementById("editAmount").value);
+        const name = document.getElementById("editName").value.trim();
+        if (!amount || !name) return;
+        state.expenses = state.expenses.map(item => item.id === state.editingExpenseId ? { ...item, amount, category: document.getElementById("editCategory").value, paymentMethod: document.getElementById("editPayment").value, name, date: document.getElementById("editDate").value || todayString() } : item);
+        state.editingExpenseId = null;
+        state.editExpenseForm = null;
+        save(); render();
+      };
+      const cancelEdit = document.getElementById("cancel-edit");
+      if (cancelEdit) cancelEdit.onclick = () => { state.editingExpenseId = null; state.editExpenseForm = null; render(); };
+      document.querySelectorAll(".budget-input").forEach(input => input.oninput = e => { state.budgets[e.target.dataset.cat] = normalizeBudgetValue(e.target.value); save(); });
+      const extra = document.getElementById("extra-income");
+      if (extra) extra.oninput = e => { state.extraIncome = normalizeBudgetValue(e.target.value); save(); };
+      const budgetReset = document.getElementById("budget-reset");
+      if (budgetReset) budgetReset.onclick = () => { state.isConfirmingBudgetReset = true; render(); };
+      const confirmBudget = document.getElementById("confirm-budget-reset");
+      if (confirmBudget) confirmBudget.onclick = () => { state.budgets = { ...DEFAULT_BUDGETS }; state.extraIncome = 0; state.isConfirmingBudgetReset = false; save(); render(); };
+      const cancelBudget = document.getElementById("cancel-budget-reset");
+      if (cancelBudget) cancelBudget.onclick = () => { state.isConfirmingBudgetReset = false; render(); };
+      const listReset = document.getElementById("list-reset");
+      if (listReset) listReset.onclick = () => { state.isConfirmingListReset = true; render(); };
+      const confirmList = document.getElementById("confirm-list-reset");
+      if (confirmList) confirmList.onclick = () => { state.expenses = []; state.isConfirmingListReset = false; state.editingExpenseId = null; state.editExpenseForm = null; save(); render(); };
+      const cancelList = document.getElementById("cancel-list-reset");
+      if (cancelList) cancelList.onclick = () => { state.isConfirmingListReset = false; render(); };
+    }
+    load();
+    render();
   </script>
 </body>
 </html>
